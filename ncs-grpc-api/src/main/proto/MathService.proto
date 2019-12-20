@@ -1,0 +1,21 @@
+syntax = "proto3";
+package com.bloomberg.grpc.api;
+
+// MathRequest payload
+message MathRequest {
+  
+  int32 a = 1;
+  int32 b = 2;
+
+}
+
+// MathResponse payload
+message MathResponse {
+  string result = 1;
+}
+
+// MathService definition
+service MathService {
+  // Define a RPC operation
+  rpc sendRequest(MathRequest) returns (MathResponse);
+}

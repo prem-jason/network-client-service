@@ -1,0 +1,72 @@
+= NetworkClientService Deployment Guide
+:author: Prem Kumar
+:doc-name: Deployment Guide
+
+== Introduction
+
+This document describes how to run the Network Client Service (NCS) in Stand Alone Environment (SAE).  It has two applications, Network Service (NS) and Client Service (CS) applications.
+
+=== Function Overview
+
+The primary goal of the Network Client Service (NCS) is to provide a consistent multiplication API for Network Service (NS) operations.  The Network Service (NS) application exposes the multiplication REST API endpoint and in turn this REST call invokes the multiplication service in the Client Service (CS) application.
+
+=== Technologies Used
+
+* SpringBoot 2.1.8.RELEASE
+* gRPC 1.24.0
+* JUnit 4.12
+* EasyMock 3.6
+* Java 1.8
+* Apache Maven 3.5.2
+
+=== Prerequisites
+
+* install Java (1.8) environment
+* install Apache Maven
+* import in Eclipse IDE or any editor of your choice (if required)
+
+=== Project Details
+
+Network Client Service (NCS) project is a maven project with three maven modules.
+
+* networkservice
+* clientservice
+* ncs-grpc-api
+
+=== Preparation
+
+Ensure the following:
+
+* unzip the project
+* change the directory to network-client-service
+* build the project
+
+      mvn clean install
+
+=== Execution
+* change directory to networkservice/target
+      java -jar networkservice-0.0.1-SNAPSHOT.jar
+* change directory to clientservice/target
+      java -jar clientservice-0.0.1-SNAPSHOT.jar
+* trigger multiplication REST endpoint
+      curl -X GET   http://localhost:8080/networkservice/multiplication/55551/33
+
+=== Troubleshooting
+* ensure ncs-grpc-api compiled as it is the dependency for the networkservice and clientservice projects.
+* ensure to allocate new port in case of port conflicts while starting the NetworkService (NS) application
+     -Dserver.port=xxxx
+* ensure to allocate new port number in case of any port conflicts while starting the Consumer Service (NS).  Change the port number in application.properties file.
+* if clientservice application is not up or running, networkservice application throws error for rest call
+
+    {
+      "statusCode": 500,
+      "message": "Issue connecting with Client Service"
+    }
+
+    ensure that clientservice application is up or running.
+
+* if networkservice application REST call unable to connect with clientservice application.  Check for the ports and kill the process id, if the clientservice application port exists.
+
+     lsof -i -P -n | grep LISTEN
+
+     kill -9 <<processid>>
